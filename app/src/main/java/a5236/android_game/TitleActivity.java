@@ -1,13 +1,18 @@
 package a5236.android_game;
 
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.Fragment;
 import android.os.Bundle;
 
-public class TitleActivity extends AppCompatActivity {
+public class TitleActivity extends SingleFragmentActivity {
 
-    @Override
+    /*@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_title);
+        setContentView(R.layout.fragment_title);
+    }*/
+
+    @Override
+    protected Fragment createFragment() {
+        return new TitleFragment();
     }
 }
