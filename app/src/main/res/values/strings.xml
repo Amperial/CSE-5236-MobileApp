@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Android-Game</string>
+    <string name="app_title">Wheel of Misfortune with Alexa</string>
+    <string name="username_hint">Username</string>
+    <string name="password_hint">Password</string>
+    <string name="button_login">Login</string>
+    <string name="button_create_account">Create Account</string>
 </resources>
