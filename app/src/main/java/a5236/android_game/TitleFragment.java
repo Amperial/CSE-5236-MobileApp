@@ -19,11 +19,11 @@ public class TitleFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_title, container, false);
         /*stuff*/
-        Log.d(TAG, "onCreateView(LayoutInflater, ViewGroup, Bundle) called");
+        /*Log.d(TAG, "onCreateView(LayoutInflater, ViewGroup, Bundle) called");*/
         return v;
     }
 
-    @Override
+    /*@Override
     public void onAttach(Context context){
         super.onAttach(context);
         Log.d(TAG, "onAttach(Context) called");
@@ -81,5 +81,5 @@ public class TitleFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         Log.d(TAG, "onDetach() called");
-    }
+    }*/
 }

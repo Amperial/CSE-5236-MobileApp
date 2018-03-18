@@ -5,4 +5,8 @@
     <string name="password_hint">Password</string>
     <string name="button_login">Login</string>
     <string name="button_create_account">Create Account</string>
+    <string name="button_join_game">Join Game</string>
+    <string name="button_host_game">Host Game</string>
+    <string name="button_submit">Submit</string>
+    <string name="welcome">Welcome</string>
 </resources>
