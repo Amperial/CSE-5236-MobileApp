@@ -1,0 +1,18 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="a5236.android_game.WheelFragment">
+
+    <NumberPicker
+        android:id="@+id/numberPicker"
+        android:layout_width="match_parent"
+        android:layout_height="387dp" />
+
+    <TextView
+        android:id="@+id/wheeltext"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/spin" />
+
+</FrameLayout>

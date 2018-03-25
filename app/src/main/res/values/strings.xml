@@ -9,4 +9,12 @@
     <string name="button_host_game">Host Game</string>
     <string name="button_submit">Submit</string>
     <string name="welcome">Welcome</string>
+    <string name="game_select">The chosen game is </string>
+    <string name="scoreboard">The current standings for this game</string>
+    <string name="player">Player</string>
+    <string name="score">Score</string>
+    <string name="spin">Spin to choose a minigame!</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
