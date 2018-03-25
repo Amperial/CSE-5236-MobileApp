@@ -3,7 +3,8 @@
     <string name="app_title">Wheel of Misfortune with Alexa</string>
     <string name="username_hint">Username</string>
     <string name="password_hint">Password</string>
-    <string name="button_login">Login</string>
+    <string name="button_signin">Sign in</string>
+    <string name="button_signout">Sign out</string>
     <string name="button_create_account">Create Account</string>
     <string name="button_join_game">Join Game</string>
     <string name="button_host_game">Host Game</string>

@@ -6,7 +6,14 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 
 /**
@@ -18,7 +25,7 @@ public class ScoreboardFragment extends Fragment {
 
 
     // TODO: Rename and change types of parameters
-    private Player[] mParam1;
+    private Player[] players;  //Somehow pass the player list to this
     private ListView mScoreboard;
 
 
@@ -26,17 +33,10 @@ public class ScoreboardFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @return A new instance of fragment ScoreboardFragment.
-     */
-    // TODO: Rename and change types and number of parameters
+
     public static ScoreboardFragment newInstance(Player[] param1) {
         ScoreboardFragment fragment = new ScoreboardFragment();
-        fragment.mParam1 = param1;
+        fragment.players = param1;
         return fragment;
     }
 
@@ -51,6 +51,21 @@ public class ScoreboardFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_scoreboard, container, false);
         mScoreboard = (ListView) v.findViewById(R.id.playerlist);
+        ArrayList<Player> player_list = new ArrayList<Player>();
+
+        player_list.addAll(Arrays.asList(players));
+        Collections.sort(player_list, new Comparator<Player>() {
+            @Override
+            public int compare(Player p1, Player p2) {
+                return p1.getPoints()-p2.getPoints();
+            }
+        });
+
+        PlayersAdapter adapter = new PlayersAdapter(getContext(), player_list);
+
+        mScoreboard.setAdapter(adapter);
+
+
 
         return v;
     }
