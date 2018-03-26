@@ -7,10 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-/**
- * Created by cliffy on 3/18/18.
- */
-
 public class HomeFragment extends Fragment {
 
     private static final String TAG = "HomeFragment";
