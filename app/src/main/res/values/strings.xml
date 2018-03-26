@@ -1,14 +1,9 @@
 <resources>
     <string name="app_name">Android-Game</string>
-    <string name="app_title">Wheel of Misfortune with Alexa</string>
-    <string name="username_hint">Username</string>
-    <string name="password_hint">Password</string>
-    <string name="button_signin">Sign in</string>
-    <string name="button_signout">Sign out</string>
-    <string name="button_create_account">Create Account</string>
-    <string name="button_join_game">Join Game</string>
-    <string name="button_host_game">Host Game</string>
-    <string name="button_submit">Submit</string>
+    <string name="app_title">Wheel of Misfortune</string>
+    <string name="button_signin">Sign In</string>
+    <string name="button_signout">Sign Out</string>
+    <string name="button_joingame">Join Game</string>
     <string name="welcome">Welcome</string>
     <string name="game_select">The chosen game is </string>
     <string name="scoreboard">The current standings for this game</string>
