@@ -9,6 +9,7 @@ import java.util.Set;
 
 import a5236.android_game.Player;
 import a5236.android_game.multiplayer.minigames.Minigame;
+import a5236.android_game.multiplayer.minigames.MultipleChoiceMinigame;
 import a5236.android_game.multiplayer.packet.Packet;
 import a5236.android_game.multiplayer.packet.PacketReader;
 
@@ -35,6 +36,21 @@ public class GameHost extends GamePlayer {
                     String participantId = reader.readString();
                     waitingIds.remove(participantId);
                     Log.d(TAG, "Received mini-game ready from participantId " + participantId);
+                } catch (IOException ignored) {
+                }
+            }
+        });
+        // Player answer for multiple choice mini-game question
+        setPacketHandler(21, new PacketHandler() {
+            @Override
+            public void handlePacket(PacketReader reader) {
+                try {
+                    String participantId = reader.readString();
+                    String answer = reader.readString();
+                    if (roundMinigame != null && roundMinigame instanceof MultipleChoiceMinigame) {
+                        Log.d(TAG, "Received multiple choice answer: " + answer + " from participantId " + participantId);
+                        ((MultipleChoiceMinigame) roundMinigame).receiveAnswer(participantId, answer);
+                    }
                 } catch (IOException ignored) {
                 }
             }
@@ -71,7 +87,7 @@ public class GameHost extends GamePlayer {
                 roundMinigame = null;
 
                 // Show all players the current scoreboard and wait for them to continue
-                waitOnPlayers(buildScoreboardPacket());
+                waitOnPlayers(buildScoreboardPacket(players));
             } else {
                 Log.d(TAG, "Round in progress, ticking minigame");
                 roundMinigame.gameTick();
@@ -84,25 +100,8 @@ public class GameHost extends GamePlayer {
                 Log.d(TAG, "Choosing next minigame, showing wheel");
                 // Increment round number and choose minigame
                 round++;
-                roundMinigame = new Minigame() {
-                    private int ticksLeft = 10;
-
-                    @Override
-                    public String getName() {
-                        return "MultipleChoice";
-                    }
-
-                    @Override
-                    public void gameTick() {
-                        Log.d(TAG, getName() + " minigame gameTick - " + ticksLeft + " left");
-                        ticksLeft--;
-                    }
-
-                    @Override
-                    public boolean isFinished() {
-                        return ticksLeft == 0;
-                    }
-                };
+                // TODO: Add more mini-games, ability to select random one
+                roundMinigame = new MultipleChoiceMinigame(this);
                 roundChosen = true;
 
                 // Show all players the chosen minigame for the next round and wait for them to continue
@@ -115,7 +114,7 @@ public class GameHost extends GamePlayer {
     }
 
     // Send a packet to all players to continue to next state and wait for them to continue
-    private void waitOnPlayers(Packet packet) {
+    public void waitOnPlayers(Packet packet) {
         sendToPlayers(packet);
         waitingIds.clear();
         for (Player player : players) {
@@ -124,7 +123,7 @@ public class GameHost extends GamePlayer {
     }
 
     // Send a packet to all players
-    private void sendToPlayers(Packet packet) {
+    public void sendToPlayers(Packet packet) {
         multiplayerClient.sendToPlayers(packet, callback);
     }
 

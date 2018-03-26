@@ -4,6 +4,7 @@ import android.util.Log;
 
 import a5236.android_game.MC_Question;
 import a5236.android_game.Player;
+import a5236.android_game.ScoreboardFragment;
 import a5236.android_game.multiplayer.packet.Packet;
 import a5236.android_game.multiplayer.packet.PacketBuilder;
 import a5236.android_game.multiplayer.packet.PacketReader;
@@ -21,9 +22,9 @@ public class GamePlayer {
 
     private static final String TAG = "GamePlayer";
 
-    protected MultiplayerClient multiplayerClient;
+    public MultiplayerClient multiplayerClient;
 
-    protected static final RealTimeMultiplayerClient.ReliableMessageSentCallback callback = new RealTimeMultiplayerClient.ReliableMessageSentCallback() {
+    public static final RealTimeMultiplayerClient.ReliableMessageSentCallback callback = new RealTimeMultiplayerClient.ReliableMessageSentCallback() {
         @Override
         public void onRealTimeMessageSent(int i, int i1, String s) {
         }
@@ -33,8 +34,8 @@ public class GamePlayer {
 
     private Queue<Packet> receivedPackets = new LinkedList<>();
 
-    protected Player player;
-    protected List<Player> players;
+    public Player player;
+    public List<Player> players;
 
     GamePlayer(final MultiplayerClient multiplayerClient, final Player player, final List<Player> players) {
         this.multiplayerClient = multiplayerClient;
@@ -87,6 +88,7 @@ public class GamePlayer {
                     // TODO: Show fragment with the given question
 
                     // TODO: Reply to host with packet to select answer
+                    sendToHost(buildMultipleChoiceSubmitAnswerPacket(player, answer));
                 } catch (IOException ignored) {
                 }
             }
@@ -96,7 +98,25 @@ public class GamePlayer {
             @Override
             public void handlePacket(PacketReader reader) {
                 Log.d(TAG, "Showing current scoreboard fragment for game");
+                Player[] playerArray = null;
+                try {
+                    int playerAmount = (int) reader.readByte();
+                    playerArray = new Player[playerAmount];
+                    for (int i = 0; i < playerAmount; i++) {
+                        String playerId = reader.readString();
+                        String playerName = reader.readString();
+                        int playerPoints = reader.readInt();
+                        int roundsWon = (int) reader.readByte();
+                        Player p = new Player(playerId, playerName);
+                        p.setPoints(playerPoints);
+                        p.setRounds_won(roundsWon);
+                        playerArray[i] = p;
+                    }
+                } catch (IOException ignored) {
+                }
+
                 // TODO: Show scoreboard for mini-game or final results
+                ScoreboardFragment scoreboardFragment = ScoreboardFragment.newInstance(playerArray);
 
                 // TODO: Move this elsewhere and call when scoreboard fragment is finished
                 sendToHost(buildScoreboardContinuePacket(player));
@@ -117,22 +137,22 @@ public class GamePlayer {
         void handlePacket(PacketReader reader);
     }
 
-    void setPacketHandler(int id, PacketHandler handler) {
+    public void setPacketHandler(int id, PacketHandler handler) {
         packetHandlers.put((short) id, handler);
     }
 
-    void handlePacket(Packet packet) {
+    public void handlePacket(Packet packet) {
         receivedPackets.add(packet);
     }
 
-    Packet buildMessagePacket(String message) {
+    public Packet buildMessagePacket(String message) {
         return new PacketBuilder(Packet.PacketType.Request)
                 .withID((short) 1)
                 .withString(message)
                 .build();
     }
 
-    Packet buildMinigameWheelPacket(int round, String minigameName) {
+    public Packet buildMinigameWheelPacket(int round, String minigameName) {
         return new PacketBuilder(Packet.PacketType.Request)
                 .withID((short) 10)
                 .withByte((byte) round)
@@ -140,14 +160,14 @@ public class GamePlayer {
                 .build();
     }
 
-    Packet buildMinigameReadyPacket(Player player) {
+    public Packet buildMinigameReadyPacket(Player player) {
         return new PacketBuilder(Packet.PacketType.Reply)
                 .withID((short) 11)
                 .withString(player.getParticipantId())
                 .build();
     }
 
-    Packet buildMultipleChoiceMinigamePacket(MC_Question question) {
+    public Packet buildMultipleChoiceMinigamePacket(MC_Question question) {
         return new PacketBuilder(Packet.PacketType.Request)
                 .withID((short) 20)
                 .withString(question.getQuestion())
@@ -159,27 +179,41 @@ public class GamePlayer {
                 .build();
     }
 
-    Packet buildScoreboardPacket() {
-        // TODO: Pass through all players and scores here
-        return new PacketBuilder(Packet.PacketType.Request)
-                .withID((short) 30)
+    public Packet buildMultipleChoiceSubmitAnswerPacket(Player player, String answer) {
+        return new PacketBuilder(Packet.PacketType.Reply)
+                .withID((short) 21)
+                .withString(player.getParticipantId())
+                .withString(answer)
                 .build();
     }
 
-    Packet buildScoreboardContinuePacket(Player player) {
+    public Packet buildScoreboardPacket(List<Player> players) {
+        PacketBuilder builder = new PacketBuilder(Packet.PacketType.Request);
+        builder.withID((short) 30);
+        builder.withByte((byte) players.size());
+        for (Player player : players) {
+            builder.withString(player.getParticipantId());
+            builder.withString(player.getDisplayName());
+            builder.withInt(player.getPoints());
+            builder.withByte((byte) player.getRounds_won());
+        }
+        return builder.build();
+    }
+
+    public Packet buildScoreboardContinuePacket(Player player) {
         return new PacketBuilder(Packet.PacketType.Reply)
                 .withID((short) 31)
                 .withString(player.getParticipantId())
                 .build();
     }
 
-    Packet buildFinishGamePacket() {
+    public Packet buildFinishGamePacket() {
         return new PacketBuilder(Packet.PacketType.Request)
                 .withID((short) 40)
                 .build();
     }
 
-    private void sendToHost(Packet packet) {
+    public void sendToHost(Packet packet) {
         multiplayerClient.sendToHost(packet, callback);
     }
 
