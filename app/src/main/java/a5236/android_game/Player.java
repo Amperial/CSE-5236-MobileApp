@@ -1,21 +1,18 @@
 package a5236.android_game;
 
-/**
- * Created by Jared on 3/23/2018.
- */
-
 public class Player {
-    private String username;
+    private String id;
     private int rounds_won;
     private int points;
-    private char gender;
 
-    public char getGender() {
-        return gender;
+    public Player(String playerId) {
+        this.id = playerId;
+        this.rounds_won = 0;
+        this.points = 0;
     }
 
-    public void setGender(char gender) {
-        this.gender = gender;
+    public String getPlayerId() {
+        return id;
     }
 
     public int getRounds_won() {
@@ -33,17 +30,5 @@ public class Player {
     public void setPoints(int points) {
         this.points = points;
     }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-
-
-
 
 }

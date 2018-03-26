@@ -8,12 +8,6 @@ public class TitleActivity extends SingleFragmentActivity {
 
     private static final String TAG = "TitleActivity";
 
-    /*@Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_title);
-    }*/
-
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);

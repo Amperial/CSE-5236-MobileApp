@@ -1,9 +1,5 @@
 package a5236.android_game;
 
-/**
- * Created by cliffy on 2/20/18.
- */
-
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.v4.app.Fragment;
