@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -33,7 +34,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import a5236.android_game.TitleFragment;
 
@@ -63,13 +68,10 @@ public class MultiplayerClient {
     private RoomConfig mRoomConfig;
 
     // The participants in the currently active game
-    private ArrayList<Participant> mParticipants = null;
+    public ArrayList<Participant> mParticipants = null;
 
     // My participant ID in the currently active game
     private String mMyId = null;
-
-    // Message buffer for sending messages
-    private byte[] mMsgBuf = new byte[2];
 
     private final Activity activity;
     private final TitleFragment titleFragment;
@@ -191,6 +193,9 @@ public class MultiplayerClient {
                         public void onComplete(@NonNull Task<Void> task) {
                             mRoomId = null;
                             mRoomConfig = null;
+                            controller = null;
+                            hostId = null;
+                            playerIds = null;
                             Log.d(TAG, "Left game");
                         }
                     });
@@ -343,7 +348,9 @@ public class MultiplayerClient {
     private OnRealTimeMessageReceivedListener mOnRealTimeMessageReceivedListener = new OnRealTimeMessageReceivedListener() {
         @Override
         public void onRealTimeMessageReceived(@NonNull RealTimeMessage realTimeMessage) {
-
+            if (controller != null) {
+                controller.handleMessage(realTimeMessage);
+            }
         }
     };
 
@@ -366,8 +373,67 @@ public class MultiplayerClient {
                 });
     }
 
+    private GameController controller = null;
+    public String hostId = null;
+    public List<String> playerIds = null;
+
     private void startGame() {
         Log.d(TAG, "Starting game");
+
+        //switchToScreen(R.id.screen_game);
+
+        // Set game controller (participant 0 after sorting ids becomes the hostId)
+        // This isn't the best way but it's fine for our basic purposes
+        Collections.sort(mParticipants, new Comparator<Participant>() {
+            @Override
+            public int compare(Participant p1, Participant p2) {
+                return p1.getParticipantId().compareTo(p2.getParticipantId());
+            }
+        });
+        Participant host = mParticipants.get(0);
+        hostId = host.getParticipantId();
+        playerIds = new ArrayList<>();
+        for (Participant participant : mParticipants) {
+            if (!participant.getParticipantId().equals(hostId)) {
+                playerIds.add(participant.getParticipantId());
+            }
+        }
+        if (hostId.equals(mMyId)) {
+            controller = new GameHost(this);
+        } else {
+            controller = new GamePlayer(this);
+        }
+
+        // run the gameTick() method every second to update the game.
+        final Handler h = new Handler();
+        h.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                controller.gameTick();
+                h.postDelayed(this, 1000);
+            }
+        }, 1000);
+    }
+
+    public void sendToParticipant(byte[] message, String participantId, RealTimeMultiplayerClient.ReliableMessageSentCallback callback) {
+        Task<Integer> task = mRealTimeMultiplayerClient
+                .sendReliableMessage(message, mRoomId, participantId, callback)
+                .addOnCompleteListener(new OnCompleteListener<Integer>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Integer> task) {
+                        // message sent
+                    }
+                });
+    }
+
+    public void sendToHost(byte[] message, RealTimeMultiplayerClient.ReliableMessageSentCallback callback) {
+        sendToParticipant(message, hostId, callback);
+    }
+
+    public void sendToPlayers(byte[] message, RealTimeMultiplayerClient.ReliableMessageSentCallback callback) {
+        for (String playerId : playerIds) {
+            sendToParticipant(message, playerId, callback);
+        }
     }
 
     private void keepScreenOn() {

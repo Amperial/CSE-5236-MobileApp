@@ -9,10 +9,6 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-/**
- * Created by Jared on 3/25/2018.
- */
-
 public class PlayersAdapter extends ArrayAdapter<Player> {
     public PlayersAdapter(Context context, ArrayList<Player> players){
         super(context, 0, players);
@@ -30,7 +26,7 @@ public class PlayersAdapter extends ArrayAdapter<Player> {
         TextView tvName = (TextView) convertView.findViewById(R.id.Name);
         TextView tvScore = (TextView) convertView.findViewById(R.id.Score);
         // Populate the data into the template view using the data object
-        tvName.setText(player.getUsername());
+        tvName.setText(player.getPlayerId());
         tvScore.setText(player.getPoints());
         // Return the completed view to render on screen
         return convertView;
