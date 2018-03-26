@@ -2,17 +2,23 @@ package a5236.android_game;
 
 public class Player {
     private String id;
+    private String name;
     private int rounds_won;
     private int points;
 
-    public Player(String playerId) {
+    public Player(String playerId, String name) {
         this.id = playerId;
+        this.name = name;
         this.rounds_won = 0;
         this.points = 0;
     }
 
-    public String getPlayerId() {
+    public String getParticipantId() {
         return id;
+    }
+
+    public String getDisplayName() {
+        return name;
     }
 
     public int getRounds_won() {

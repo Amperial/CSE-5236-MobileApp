@@ -38,8 +38,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import a5236.android_game.TitleFragment;
 import a5236.android_game.multiplayer.packet.Packet;
@@ -198,7 +196,7 @@ public class MultiplayerClient {
                             mRoomConfig = null;
                             controller = null;
                             hostId = null;
-                            playerIds = null;
+                            players = null;
                             Log.d(TAG, "Left game");
                         }
                     });
@@ -380,9 +378,11 @@ public class MultiplayerClient {
                 });
     }
 
-    private GameController controller = null;
+    private GamePlayer controller = null;
+    // Id of host participant
     public String hostId = null;
-    public List<String> playerIds = null;
+    // Player instances of all participants, including host
+    public List<a5236.android_game.Player> players = null;
 
     private void startGame() {
         Log.d(TAG, "Starting game");
@@ -399,16 +399,19 @@ public class MultiplayerClient {
         });
         Participant host = mParticipants.get(0);
         hostId = host.getParticipantId();
-        playerIds = new ArrayList<>();
+        players = new ArrayList<>();
+        a5236.android_game.Player player = null;
         for (Participant participant : mParticipants) {
-            if (!participant.getParticipantId().equals(hostId)) {
-                playerIds.add(participant.getParticipantId());
+            a5236.android_game.Player p = new a5236.android_game.Player(participant.getParticipantId(), participant.getDisplayName());
+            players.add(p);
+            if (p.getParticipantId().equals(mMyId)) {
+                player = p;
             }
         }
         if (hostId.equals(mMyId)) {
-            controller = new GameHost(this);
+            controller = new GameHost(this, player, players);
         } else {
-            controller = new GamePlayer(this);
+            controller = new GamePlayer(this, player, players);
         }
 
         // run the gameTick() method every second to update the game.
@@ -423,14 +426,22 @@ public class MultiplayerClient {
     }
 
     private void sendToParticipant(byte[] message, String participantId, RealTimeMultiplayerClient.ReliableMessageSentCallback callback) {
-        Task<Integer> task = mRealTimeMultiplayerClient
-                .sendReliableMessage(message, mRoomId, participantId, callback)
-                .addOnCompleteListener(new OnCompleteListener<Integer>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Integer> task) {
-                        // message sent
-                    }
-                });
+        if (participantId.equals(mMyId)) {
+            try {
+                Packet packet = PacketCompressor.decompress(Packet.fromByteArray(message));
+                controller.handlePacket(packet);
+            } catch (IOException ignored) {
+            }
+        } else {
+            Task<Integer> task = mRealTimeMultiplayerClient
+                    .sendReliableMessage(message, mRoomId, participantId, callback)
+                    .addOnCompleteListener(new OnCompleteListener<Integer>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Integer> task) {
+                            // message sent
+                        }
+                    });
+        }
     }
 
     void sendToParticipant(Packet packet, String participantId, RealTimeMultiplayerClient.ReliableMessageSentCallback callback) {
@@ -448,8 +459,8 @@ public class MultiplayerClient {
     void sendToPlayers(Packet packet, RealTimeMultiplayerClient.ReliableMessageSentCallback callback) {
         try {
             byte[] message = PacketCompressor.compress(packet).toByteArray();
-            for (String playerId : playerIds) {
-                sendToParticipant(message, playerId, callback);
+            for (a5236.android_game.Player player : players) {
+                sendToParticipant(message, player.getParticipantId(), callback);
             }
         } catch (IOException ignored) {
         }
