@@ -3,9 +3,14 @@ package a5236.android_game.multiplayer;
 import android.util.Log;
 
 import a5236.android_game.Player;
-import com.google.android.gms.games.multiplayer.Participant;
-import com.google.android.gms.games.multiplayer.realtime.RealTimeMessage;
+import a5236.android_game.multiplayer.packet.Packet;
+import a5236.android_game.multiplayer.packet.PacketBuilder;
+import a5236.android_game.multiplayer.packet.PacketReader;
 
+import com.google.android.gms.games.RealTimeMultiplayerClient;
+import com.google.android.gms.games.multiplayer.Participant;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +20,12 @@ public abstract class GameController {
 
     protected MultiplayerClient multiplayerClient;
     protected List<Player> players;
+
+    protected static final RealTimeMultiplayerClient.ReliableMessageSentCallback callback = new RealTimeMultiplayerClient.ReliableMessageSentCallback() {
+        @Override
+        public void onRealTimeMessageSent(int i, int i1, String s) {
+        }
+    };
 
     GameController(MultiplayerClient multiplayerClient) {
         this.multiplayerClient = multiplayerClient;
@@ -29,8 +40,29 @@ public abstract class GameController {
 
     }
 
-    public void handleMessage(RealTimeMessage message) {
-        Log.d(TAG, "Received message: " + new String(message.getMessageData()));
+    public void handlePacket(Packet packet) {
+        PacketReader reader = new PacketReader(packet);
+        switch (packet.getPacketID()) {
+            case 1:
+                handleMessagePacket(reader);
+                break;
+            default:
+        }
+    }
+
+    protected Packet buildMessagePacket(String message) {
+        return new PacketBuilder(Packet.PacketType.Request)
+                .withID((short) 1)
+                .withString(message)
+                .build();
+    }
+
+    private void handleMessagePacket(PacketReader reader) {
+        try {
+            String message = reader.readString();
+            Log.d(TAG, "Received message: " + message);
+        } catch (IOException ignored) {
+        }
     }
 
 }

@@ -33,6 +33,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -41,6 +42,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import a5236.android_game.TitleFragment;
+import a5236.android_game.multiplayer.packet.Packet;
+import a5236.android_game.multiplayer.packet.PacketCompressor;
 
 @SuppressLint("RestrictedApi")
 public class MultiplayerClient {
@@ -349,7 +352,11 @@ public class MultiplayerClient {
         @Override
         public void onRealTimeMessageReceived(@NonNull RealTimeMessage realTimeMessage) {
             if (controller != null) {
-                controller.handleMessage(realTimeMessage);
+                try {
+                    Packet packet = PacketCompressor.decompress(Packet.fromByteArray(realTimeMessage.getMessageData()));
+                    controller.handlePacket(packet);
+                } catch (IOException ignored) {
+                }
             }
         }
     };
@@ -415,7 +422,7 @@ public class MultiplayerClient {
         }, 1000);
     }
 
-    public void sendToParticipant(byte[] message, String participantId, RealTimeMultiplayerClient.ReliableMessageSentCallback callback) {
+    private void sendToParticipant(byte[] message, String participantId, RealTimeMultiplayerClient.ReliableMessageSentCallback callback) {
         Task<Integer> task = mRealTimeMultiplayerClient
                 .sendReliableMessage(message, mRoomId, participantId, callback)
                 .addOnCompleteListener(new OnCompleteListener<Integer>() {
@@ -426,13 +433,25 @@ public class MultiplayerClient {
                 });
     }
 
-    public void sendToHost(byte[] message, RealTimeMultiplayerClient.ReliableMessageSentCallback callback) {
-        sendToParticipant(message, hostId, callback);
+    public void sendToParticipant(Packet packet, String participantId, RealTimeMultiplayerClient.ReliableMessageSentCallback callback) {
+        try {
+            byte[] message = PacketCompressor.compress(packet).toByteArray();
+            sendToParticipant(message, participantId, callback);
+        } catch (IOException ignored) {
+        }
     }
 
-    public void sendToPlayers(byte[] message, RealTimeMultiplayerClient.ReliableMessageSentCallback callback) {
-        for (String playerId : playerIds) {
-            sendToParticipant(message, playerId, callback);
+    public void sendToHost(Packet packet, RealTimeMultiplayerClient.ReliableMessageSentCallback callback) {
+        sendToParticipant(packet, hostId, callback);
+    }
+
+    public void sendToPlayers(Packet packet, RealTimeMultiplayerClient.ReliableMessageSentCallback callback) {
+        try {
+            byte[] message = PacketCompressor.compress(packet).toByteArray();
+            for (String playerId : playerIds) {
+                sendToParticipant(message, playerId, callback);
+            }
+        } catch (IOException ignored) {
         }
     }
 
