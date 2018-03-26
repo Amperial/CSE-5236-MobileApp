@@ -16,6 +16,32 @@
     <string name="score">Score</string>
     <string name="spin">Spin to choose a minigame!</string>
 
+
+    <!-- The following are strings for the multiple choice game -->
+    <string name="q1q">Which of these countries is not landlocked?</string>
+    <string name="q1a">Zambia</string>
+    <string name="q1b">Croatia</string>
+    <string name="q1c">Paraguay</string>
+    <string name="q1d">Slovakia</string>
+
+    <string name="q2q">What percentage of people live North of the Equator?</string>
+    <string name="q2a">50%</string>
+    <string name="q2b">30%</string>
+    <string name="q2c">70%</string>
+    <string name="q2d">90%</string>
+
+    <string name="q3q">Which of these movies does not feature Samuel L. Jackson?</string>
+    <string name="q3a">The Shape of Water</string>
+    <string name="q3b">The Hateful Eight</string>
+    <string name="q3c">Snakes on a Plane</string>
+    <string name="q3d">Pulp Fiction</string>
+
+    <string name="q4q">What is the average distance between Earth and Mars?</string>
+    <string name="q4a">100 million km</string>
+    <string name="q4b">550 million km</string>
+    <string name="q4c">225 million km</string>
+    <string name="q4d">25 million km</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
