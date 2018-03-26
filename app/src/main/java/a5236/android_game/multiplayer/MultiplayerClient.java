@@ -433,7 +433,7 @@ public class MultiplayerClient {
                 });
     }
 
-    public void sendToParticipant(Packet packet, String participantId, RealTimeMultiplayerClient.ReliableMessageSentCallback callback) {
+    void sendToParticipant(Packet packet, String participantId, RealTimeMultiplayerClient.ReliableMessageSentCallback callback) {
         try {
             byte[] message = PacketCompressor.compress(packet).toByteArray();
             sendToParticipant(message, participantId, callback);
@@ -441,11 +441,11 @@ public class MultiplayerClient {
         }
     }
 
-    public void sendToHost(Packet packet, RealTimeMultiplayerClient.ReliableMessageSentCallback callback) {
+    void sendToHost(Packet packet, RealTimeMultiplayerClient.ReliableMessageSentCallback callback) {
         sendToParticipant(packet, hostId, callback);
     }
 
-    public void sendToPlayers(Packet packet, RealTimeMultiplayerClient.ReliableMessageSentCallback callback) {
+    void sendToPlayers(Packet packet, RealTimeMultiplayerClient.ReliableMessageSentCallback callback) {
         try {
             byte[] message = PacketCompressor.compress(packet).toByteArray();
             for (String playerId : playerIds) {
