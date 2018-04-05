@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
@@ -20,11 +21,12 @@ import a5236.android_game.multiplayer.GamePlayer;
  * Use the {@link WheelFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class WheelFragment extends Fragment {
+public class WheelFragment extends Fragment implements View.OnClickListener{
 
-    private NumberPicker mWheel;
-    private TextView mWheelText;
     private TextView mRoundText;
+    private TextView mWheelText;
+    private Button mReadyButton;
+    private String minigame;
     private int round_num;
     private String[] minigames = {"MultipleChoice", "SensorGame"};  //Needs to be populsted with games
 
@@ -32,7 +34,6 @@ public class WheelFragment extends Fragment {
         // Required empty public constructor
     }
 
-    private String name;
 
     public static WheelFragment newInstance(String name, int round) {
         WheelFragment fragment = new WheelFragment();
@@ -49,7 +50,7 @@ public class WheelFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if(getArguments()!=null){
             round_num = getArguments().getInt("round");
-            name = getArguments().getString("name");
+            minigame = getArguments().getString("name");
         }
     }
 
@@ -62,28 +63,15 @@ public class WheelFragment extends Fragment {
 
         mWheelText = (TextView) v.findViewById(R.id.wheeltext);
         mRoundText = (TextView) v.findViewById(R.id.round);
-        mWheel = (NumberPicker) v.findViewById(R.id.numberPicker);
+        mReadyButton = (Button) v.findViewById(R.id.minigameready);
+
+
         String rnd_text = "Round " + String.valueOf(round_num);
         mRoundText.setText(rnd_text);  //Set round number
 
-        mWheel.setWrapSelectorWheel(true);
-        mWheel.setDisplayedValues(minigames);
-        mWheel.setMinValue(0);
-        mWheel.setMaxValue(minigames.length-1);
-        mWheel.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                String game_chosen = minigames[newVal];
-                String game_text = R.string.game_select+game_chosen;
-                mWheelText.setText(game_text);
+        mWheelText.setText(minigame); // Set minigame name
 
-                //Alert all players of chosen game
-                //Start the selected minigame for all players
-                GamePlayer player = GamePlayer.instance;
-                player.sendToHost(player.buildMinigameReadyPacket(player.player));
-            }
-        });
-
+        mReadyButton.setOnClickListener(this);
 
         return v;
     }
@@ -100,4 +88,12 @@ public class WheelFragment extends Fragment {
         */
     }
 
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.minigameready:
+                GamePlayer player = GamePlayer.instance;
+                player.sendToHost(player.buildMinigameReadyPacket(player.player));
+        }
+    }
 }

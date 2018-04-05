@@ -12,24 +12,37 @@
             android:id="@+id/round"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/numberPicker"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="100dp"
             android:text="TextView" />
+
+        <TextView
+            android:id="@+id/wheeltitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/round"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="100dp"
+            android:text="The minigame for this round is:" />
 
         <TextView
             android:id="@+id/wheeltext"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/round"
+            android:layout_below="@+id/wheeltitle"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="31dp"
-            android:text="@string/spin" />
+            android:text="TextView" />
 
-        <NumberPicker
-            android:id="@+id/numberPicker"
-            android:layout_width="match_parent"
-            android:layout_height="387dp" />
+        <Button
+            android:id="@+id/minigameready"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/wheeltext"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp"
+            android:text="Ready"/>
+
     </RelativeLayout>
 
 </FrameLayout>
