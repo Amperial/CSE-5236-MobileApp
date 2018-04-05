@@ -171,7 +171,7 @@ public class MultiplayerClient {
 
         joinGameCallback = callback;
 
-        final int MIN_OPPONENTS = 1, MAX_OPPONENTS = 1;
+        final int MIN_OPPONENTS = 1, MAX_OPPONENTS = 7;
         Bundle autoMatchCriteria = RoomConfig.createAutoMatchCriteria(MIN_OPPONENTS, MAX_OPPONENTS, 0);
 
         keepScreenOn();
@@ -366,7 +366,7 @@ public class MultiplayerClient {
     }
 
     private void showWaitingRoom(Room room) {
-        final int MIN_PLAYERS = Integer.MAX_VALUE;
+        final int MIN_PLAYERS = 2;
         mRealTimeMultiplayerClient.getWaitingRoomIntent(room, MIN_PLAYERS)
                 .addOnSuccessListener(new OnSuccessListener<Intent>() {
                     @Override
