@@ -12,10 +12,10 @@ public class MC_Game {
 
     public MC_Game(){
         question_list = new MC_Question[4];
-        question_list[0] = new MC_Question("@string/q1q", "string/q1a" , "@string/q1b", "@string/q1c", "@string/q1d", "@string/q1b");
-        question_list[1] = new MC_Question("@string/q2q", "string/q2a" , "@string/q2b", "@string/q2c", "@string/q2d", "@string/q2d");
-        question_list[2] = new MC_Question("@string/q3q", "string/q3a" , "@string/q3b", "@string/q3c", "@string/q3d", "@string/q3a");
-        question_list[3] = new MC_Question("@string/q4q", "string/q4a" , "@string/q4b", "@string/q4c", "@string/q4d", "@string/q4c");
+        question_list[0] = new MC_Question("Which of these countries is not landlocked?", "Zambia" , "Croatia", "Paraguay", "Slovakia", "Croatia");
+        question_list[1] = new MC_Question("What percentage of people live North of the Equator?", "50%" , "30%", "70%", "90%", "90%");
+        question_list[2] = new MC_Question("Which of these movies does not feature Samuel L. Jackson?", "The Shape of Water" , "The Hateful Eight", "Snakes on a Plane", "Pulp Fiction", "The Shape of Water");
+        question_list[3] = new MC_Question("What is the average distance between Earth and Mars?", "100 million km" , "550 million km", "225 million km", "25 million km", "225 million km");
 
     }
 
