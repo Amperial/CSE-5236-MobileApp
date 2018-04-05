@@ -3,6 +3,8 @@ package a5236.android_game;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,8 +26,7 @@ import java.util.List;
 public class ScoreboardFragment extends Fragment {
 
 
-    // TODO: Rename and change types of parameters
-    private Player[] players;  //Somehow pass the player list to this
+    private  ArrayList<Player> player_list;
     private ListView mScoreboard;
 
 
@@ -34,15 +35,28 @@ public class ScoreboardFragment extends Fragment {
     }
 
 
-    public static ScoreboardFragment newInstance(Player[] param1) {
+    public static ScoreboardFragment newInstance(String[] player_names, int[] player_scores) {
         ScoreboardFragment fragment = new ScoreboardFragment();
-        fragment.players = param1;
+        Bundle args = new Bundle();
+        args.putStringArray("player_names", player_names);
+        args.putIntArray("player_scores", player_scores);
+        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+        if(getArguments()!=null){
+            String[] names = getArguments().getStringArray("player_names");
+            int[] scores = getArguments().getIntArray("player_scores");
+            for(int i = 0; i<names.length;i++){
+                Player temp = new Player(null, names[i]);
+                temp.setPoints(scores[i]);
+                player_list.add(temp);
+            }
+        }
     }
 
     @Override
@@ -51,15 +65,6 @@ public class ScoreboardFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_scoreboard, container, false);
         mScoreboard = (ListView) v.findViewById(R.id.playerlist);
-        ArrayList<Player> player_list = new ArrayList<Player>();
-
-        player_list.addAll(Arrays.asList(players));
-        Collections.sort(player_list, new Comparator<Player>() {
-            @Override
-            public int compare(Player p1, Player p2) {
-                return p1.getPoints()-p2.getPoints();
-            }
-        });
 
         PlayersAdapter adapter = new PlayersAdapter(getContext(), player_list);
 
@@ -69,5 +74,15 @@ public class ScoreboardFragment extends Fragment {
 
         return v;
     }
+
+    public void displayFragment(){
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, this);
+        transaction.addToBackStack(null);
+
+        transaction.commit();
+    }
+
+
 
 }

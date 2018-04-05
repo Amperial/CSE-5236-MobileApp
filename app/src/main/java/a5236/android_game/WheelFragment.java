@@ -2,7 +2,10 @@ package a5236.android_game;
 
 
 import android.os.Bundle;
+
+
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +22,8 @@ public class WheelFragment extends Fragment {
 
     private NumberPicker mWheel;
     private TextView mWheelText;
+    private TextView mRoundText;
+    private int round_num;
     private String[] minigames;  //Needs to be populsted with games
 
 
@@ -27,17 +32,21 @@ public class WheelFragment extends Fragment {
     }
 
 
-    public static WheelFragment newInstance() {
+    public static WheelFragment newInstance(int round) {
         WheelFragment fragment = new WheelFragment();
         Bundle args = new Bundle();
+        args.putInt("round", round);
         fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
 
+        super.onCreate(savedInstanceState);
+        if(getArguments()!=null){
+            round_num = getArguments().getInt("round");
+        }
     }
 
     @Override
@@ -48,7 +57,10 @@ public class WheelFragment extends Fragment {
 
 
         mWheelText = (TextView) v.findViewById(R.id.wheeltext);
+        mRoundText = (TextView) v.findViewById(R.id.round);
         mWheel = (NumberPicker) v.findViewById(R.id.numberPicker);
+        String rnd_text = "Round " + String.valueOf(round_num);
+        mRoundText.setText(rnd_text);  //Set round number
 
         mWheel.setWrapSelectorWheel(true);
         mWheel.setDisplayedValues(minigames);
@@ -68,6 +80,14 @@ public class WheelFragment extends Fragment {
 
 
         return v;
+    }
+
+    public void displayFragment(){
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, this);
+        transaction.addToBackStack(null);
+
+        transaction.commit();
     }
 
 }

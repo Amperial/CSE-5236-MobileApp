@@ -20,8 +20,14 @@ public class MC_Game {
     }
 
     public MC_Question getRandQuestion(){
-
-        return question_list[rnd.nextInt(question_list.length)];
+        int ind = rnd.nextInt(question_list.length);
+        MC_Question q = question_list[ind];
+        while(q == null){
+            ind = rnd.nextInt(question_list.length);
+            q = question_list[ind];
+        }
+        question_list[ind] = null;
+        return q;
     }
 
 

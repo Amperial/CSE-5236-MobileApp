@@ -1,6 +1,9 @@
 package a5236.android_game;
 
-public class Player {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Player{
     private String id;
     private String name;
     private int rounds_won;

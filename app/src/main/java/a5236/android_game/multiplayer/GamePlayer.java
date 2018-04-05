@@ -1,10 +1,15 @@
 package a5236.android_game.multiplayer;
 
+import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.util.Log;
 
+import a5236.android_game.MC_MinigameFragment;
 import a5236.android_game.MC_Question;
 import a5236.android_game.Player;
+import a5236.android_game.R;
 import a5236.android_game.ScoreboardFragment;
+import a5236.android_game.WheelFragment;
 import a5236.android_game.multiplayer.packet.Packet;
 import a5236.android_game.multiplayer.packet.PacketBuilder;
 import a5236.android_game.multiplayer.packet.PacketReader;
@@ -12,6 +17,8 @@ import a5236.android_game.multiplayer.packet.PacketReader;
 import com.google.android.gms.games.RealTimeMultiplayerClient;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -63,7 +70,9 @@ public class GamePlayer {
                     int round = (int) reader.readByte();
                     String minigameName = reader.readString();
                     Log.d(TAG, "Showing mini-game wheel for round: " + round + " and chosen minigame: " + minigameName);
-                    // TODO: Show fragment with current round and mini-game wheel
+
+                    WheelFragment wheelFragment = WheelFragment.newInstance(round);
+                    wheelFragment.displayFragment();;
 
                     // TODO: Move this elsewhere and call when mini-game wheel fragment is finished
                     sendToHost(buildMinigameReadyPacket(player));
@@ -85,7 +94,9 @@ public class GamePlayer {
                     String answer = reader.readString();
                     MC_Question mcQuestion = new MC_Question(question, a, b, c, d, answer);
                     Log.d(TAG, "Showing multiple choice mini-game");
-                    // TODO: Show fragment with the given question
+
+                    MC_MinigameFragment mcfrag = MC_MinigameFragment.newInstance(question, a, b, c, d, answer);
+                    mcfrag.displayFragment();
 
                     // TODO: Reply to host with packet to select answer
                     sendToHost(buildMultipleChoiceSubmitAnswerPacket(player, answer));
@@ -115,8 +126,22 @@ public class GamePlayer {
                 } catch (IOException ignored) {
                 }
 
-                // TODO: Show scoreboard for mini-game or final results
-                ScoreboardFragment scoreboardFragment = ScoreboardFragment.newInstance(playerArray);
+               // Display scoreboard fragment
+                Arrays.sort(playerArray, new Comparator<Player>() {
+                    @Override
+                    public int compare(Player p1, Player p2) {
+                        return p1.getPoints()-p2.getPoints();
+                    }
+                });
+                String[] player_names = new String[playerArray.length];
+                int[] player_scores = new int[playerArray.length];
+                for(int i = 0;i<playerArray.length;i++){
+                    player_names[i] = playerArray[i].getDisplayName();
+                    player_scores[i] = playerArray[i].getPoints();
+                }
+                ScoreboardFragment scoreboardFragment = ScoreboardFragment.newInstance(player_names, player_scores);
+                scoreboardFragment.displayFragment();
+
 
                 // TODO: Move this elsewhere and call when scoreboard fragment is finished
                 sendToHost(buildScoreboardContinuePacket(player));
@@ -227,5 +252,6 @@ public class GamePlayer {
             }
         }
     }
+
 
 }

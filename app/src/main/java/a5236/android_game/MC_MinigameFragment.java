@@ -3,6 +3,7 @@ package a5236.android_game;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,17 +18,22 @@ import android.widget.Toast;
  */
 public class MC_MinigameFragment extends Fragment implements View.OnClickListener {
 
-    private MC_Game mc_game;
-    private MC_Question question;
-    private TextView q, a, b, c, d;
+    private TextView qtext, atext, btext, ctext, dtext;
+    private String q, a, b, c, d;
 
     public MC_MinigameFragment() {
         // Required empty public constructor
     }
 
-    public static MC_MinigameFragment newInstance() {
+    public static MC_MinigameFragment newInstance(String q, String a, String b, String c, String d, String ans) {
         MC_MinigameFragment fragment = new MC_MinigameFragment();
         Bundle args = new Bundle();
+        args.putString("q", q);
+        args.putString("a", a);
+        args.putString("b", b);
+        args.putString("c", c);
+        args.putString("d", d);
+        args.putString("ans", ans);
         fragment.setArguments(args);
         return fragment;
     }
@@ -36,7 +42,11 @@ public class MC_MinigameFragment extends Fragment implements View.OnClickListene
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-
+            q = getArguments().getString("q");
+            a = getArguments().getString("a");
+            b = getArguments().getString("b");
+            c = getArguments().getString("c");
+            d = getArguments().getString("d");
         }
     }
 
@@ -46,85 +56,51 @@ public class MC_MinigameFragment extends Fragment implements View.OnClickListene
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_mc__minigame, container, false);
 
-        if(mc_game == null) {
-            mc_game = new MC_Game();
-        }
+        qtext = v.findViewById(R.id.Question);
+        atext = v.findViewById(R.id.choiceA);
+        btext = v.findViewById(R.id.choiceB);
+        ctext = v.findViewById(R.id.choiceC);
+        dtext = v.findViewById(R.id.choiceD);
 
-        question = mc_game.getRandQuestion();
+        qtext.setText(q);
+        atext.setText(a);
+        btext.setText(b);
+        ctext.setText(c);
+        dtext.setText(d);
 
-        q = v.findViewById(R.id.Question);
-        a = v.findViewById(R.id.choiceA);
-        b = v.findViewById(R.id.choiceB);
-        c = v.findViewById(R.id.choiceC);
-        d = v.findViewById(R.id.choiceD);
-
-        q.setText(question.getQuestion());
-        a.setText(question.getChoiceA());
-        b.setText(question.getChoiceB());
-        c.setText(question.getChoiceC());
-        d.setText(question.getChoiceD());
-
-        a.setOnClickListener(this);
-        b.setOnClickListener(this);
-        c.setOnClickListener(this);
-        d.setOnClickListener(this);
+        atext.setOnClickListener(this);
+        btext.setOnClickListener(this);
+        ctext.setOnClickListener(this);
+        dtext.setOnClickListener(this);
 
         return v;
     }
 
     @Override
     public void onClick(View v){
-        boolean correct;
         switch(v.getId()){
             case R.id.choiceA:
-                correct = question.checkAnswer(a.getText().toString());
-                if(correct){
-                    Toast.makeText(getContext(), "You were Correct!",
-                            Toast.LENGTH_SHORT).show();
-                    //Give player points
-                }
-                else{
-                    Toast.makeText(getContext(), "You were Incorrect!",
-                            Toast.LENGTH_SHORT).show();
-                }
+                //Somehow attach answer to packet
                 break;
             case R.id.choiceB:
-                correct = question.checkAnswer(b.getText().toString());
-                if(correct){
-                    Toast.makeText(getContext(), "You were Correct!",
-                            Toast.LENGTH_SHORT).show();
-                    //Give player points
-                }
-                else{
-                    Toast.makeText(getContext(), "You were Incorrect!",
-                            Toast.LENGTH_SHORT).show();
-                }
+
                 break;
             case R.id.choiceC:
-                correct = question.checkAnswer(c.getText().toString());
-                if(correct){
-                    Toast.makeText(getContext(), "You were Correct!",
-                            Toast.LENGTH_SHORT).show();
-                    //Give player points
-                }
-                else{
-                    Toast.makeText(getContext(), "You were Incorrect!",
-                            Toast.LENGTH_SHORT).show();
-                }
+
                 break;
             case R.id.choiceD:
-                correct = question.checkAnswer(d.getText().toString());
-                if(correct){
-                    Toast.makeText(getContext(), "You were Correct!",
-                            Toast.LENGTH_SHORT).show();
-                    //Give player points
-                }
-                else{
-                    Toast.makeText(getContext(), "You were Incorrect!",
-                            Toast.LENGTH_SHORT).show();
-                }
+
                 break;
         }
+    }
+
+
+    public void displayFragment(){
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, this);
+        transaction.addToBackStack(null);
+
+        transaction.commit();
     }
 
 

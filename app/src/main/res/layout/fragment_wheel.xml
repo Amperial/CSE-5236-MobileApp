@@ -4,15 +4,32 @@
     android:layout_height="match_parent"
     tools:context="a5236.android_game.WheelFragment">
 
-    <NumberPicker
-        android:id="@+id/numberPicker"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="387dp" />
+        android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/wheeltext"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/spin" />
+        <TextView
+            android:id="@+id/round"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/numberPicker"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="12dp"
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/wheeltext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/round"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="31dp"
+            android:text="@string/spin" />
+
+        <NumberPicker
+            android:id="@+id/numberPicker"
+            android:layout_width="match_parent"
+            android:layout_height="387dp" />
+    </RelativeLayout>
 
 </FrameLayout>
