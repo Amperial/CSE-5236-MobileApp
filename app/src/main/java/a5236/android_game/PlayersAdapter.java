@@ -26,8 +26,8 @@ public class PlayersAdapter extends ArrayAdapter<Player> {
         TextView tvName = (TextView) convertView.findViewById(R.id.Name);
         TextView tvScore = (TextView) convertView.findViewById(R.id.Score);
         // Populate the data into the template view using the data object
-        tvName.setText(player.getDisplayName());
-        tvScore.setText(player.getPoints());
+        tvName.setText(player.getDisplayName() + "");
+        tvScore.setText(player.getPoints() + "");
         // Return the completed view to render on screen
         return convertView;
     }

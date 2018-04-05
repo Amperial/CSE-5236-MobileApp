@@ -29,7 +29,7 @@ import a5236.android_game.multiplayer.GamePlayer;
 public class ScoreboardFragment extends Fragment implements View.OnClickListener {
 
 
-    private  ArrayList<Player> player_list;
+    private  ArrayList<Player> player_list = new ArrayList<>();
     private ListView mScoreboard;
 
     private Button mContinueButton;
@@ -56,7 +56,6 @@ public class ScoreboardFragment extends Fragment implements View.OnClickListener
         if(getArguments()!=null){
             String[] names = getArguments().getStringArray("player_names");
             int[] scores = getArguments().getIntArray("player_scores");
-            player_list = new ArrayList<>();
             for(int i = 0; i<names.length;i++){
                 Player temp = new Player(null, names[i]);
                 temp.setPoints(scores[i]);
