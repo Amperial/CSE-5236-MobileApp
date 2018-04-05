@@ -17,7 +17,7 @@ public class TitleFragment extends Fragment implements View.OnClickListener {
 
     private static final String TAG = "TitleFragment";
 
-    private MultiplayerClient multiplayerClient = null;
+    //private MultiplayerClient multiplayerClient = null;
 
     private Button signIn = null;
     private Button signOut = null;
@@ -46,7 +46,7 @@ public class TitleFragment extends Fragment implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate(Bundle) called");
 
-        multiplayerClient = new MultiplayerClient(this);
+        //multiplayerClient = new MultiplayerClient(this);
     }
 
     @Override
@@ -86,7 +86,7 @@ public class TitleFragment extends Fragment implements View.OnClickListener {
         super.onStop();
         Log.d(TAG, "onStop() called");
 
-        multiplayerClient.leaveGame();
+        //multiplayerClient.leaveGame();
     }
 
     @Override
@@ -124,9 +124,13 @@ public class TitleFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    private MultiplayerClient getMultiplayerClient() {
+        return ((SingleFragmentActivity) getActivity()).multiplayerClient;
+    }
+
     private void clickSignIn() {
         signIn.setClickable(false);
-        multiplayerClient.signIn(new MultiplayerClient.SignInCallback() {
+        getMultiplayerClient().signIn(new MultiplayerClient.SignInCallback() {
             @Override
             public void onComplete(boolean success) {
                 if (success) {
@@ -142,7 +146,7 @@ public class TitleFragment extends Fragment implements View.OnClickListener {
     private void clickSignOut() {
         signOut.setClickable(false);
         joinGame.setClickable(false);
-        multiplayerClient.signOut(new MultiplayerClient.SignOutCallback() {
+        getMultiplayerClient().signOut(new MultiplayerClient.SignOutCallback() {
             @Override
             public void onComplete(boolean success) {
                 if (success) {
@@ -159,7 +163,7 @@ public class TitleFragment extends Fragment implements View.OnClickListener {
     private void clickJoinGame() {
         signOut.setClickable(false);
         joinGame.setClickable(false);
-        multiplayerClient.joinGame(new MultiplayerClient.JoinGameCallback() {
+        getMultiplayerClient().joinGame(new MultiplayerClient.JoinGameCallback() {
             @Override
             public void onComplete(boolean success) {
                 signOut.setClickable(true);
@@ -171,10 +175,12 @@ public class TitleFragment extends Fragment implements View.OnClickListener {
         });
     }
 
+    /*
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
 
         multiplayerClient.onActivityResult(requestCode, resultCode, intent);
     }
+    */
 }

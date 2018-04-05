@@ -39,6 +39,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import a5236.android_game.SingleFragmentActivity;
 import a5236.android_game.TitleFragment;
 import a5236.android_game.multiplayer.packet.Packet;
 import a5236.android_game.multiplayer.packet.PacketCompressor;
@@ -75,11 +76,9 @@ public class MultiplayerClient {
     private String mMyId = null;
 
     private final Activity activity;
-    private final TitleFragment titleFragment;
 
-    public MultiplayerClient(TitleFragment titleFragment) {
-        this.activity = titleFragment.getActivity();
-        this.titleFragment = titleFragment;
+    public MultiplayerClient(SingleFragmentActivity activity) {
+        this.activity = activity;
 
         mGoogleSignInClient = GoogleSignIn.getClient(activity, GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN);
     }
@@ -108,7 +107,7 @@ public class MultiplayerClient {
 
         // Start activity for sign in intent
         signInCallback = callback;
-        titleFragment.startActivityForResult(mGoogleSignInClient.getSignInIntent(), RC_SIGN_IN);
+        activity.startActivityForResult(mGoogleSignInClient.getSignInIntent(), RC_SIGN_IN);
     }
 
     private void onSignedIn(GoogleSignInAccount account) {
@@ -373,7 +372,7 @@ public class MultiplayerClient {
                     @Override
                     public void onSuccess(Intent intent) {
                         // show waiting room UI
-                        titleFragment.startActivityForResult(intent, RC_WAITING_ROOM);
+                        activity.startActivityForResult(intent, RC_WAITING_ROOM);
                     }
                 });
     }

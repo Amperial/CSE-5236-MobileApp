@@ -29,6 +29,8 @@ public class GamePlayer {
 
     private static final String TAG = "GamePlayer";
 
+    public static GamePlayer instance;
+
     public MultiplayerClient multiplayerClient;
 
     public static final RealTimeMultiplayerClient.ReliableMessageSentCallback callback = new RealTimeMultiplayerClient.ReliableMessageSentCallback() {
@@ -45,6 +47,8 @@ public class GamePlayer {
     public List<Player> players;
 
     GamePlayer(final MultiplayerClient multiplayerClient, final Player player, final List<Player> players) {
+        instance = this;
+
         this.multiplayerClient = multiplayerClient;
 
         this.player = player;
@@ -71,11 +75,10 @@ public class GamePlayer {
                     String minigameName = reader.readString();
                     Log.d(TAG, "Showing mini-game wheel for round: " + round + " and chosen minigame: " + minigameName);
 
-                    WheelFragment wheelFragment = WheelFragment.newInstance(round);
-                    wheelFragment.displayFragment();;
+                    WheelFragment wheelFragment = WheelFragment.newInstance(minigameName, round);
+                    wheelFragment.displayFragment();
 
-                    // TODO: Move this elsewhere and call when mini-game wheel fragment is finished
-                    sendToHost(buildMinigameReadyPacket(player));
+                    //sendToHost(buildMinigameReadyPacket(player));
                 } catch (IOException ignored) {
                 }
             }
@@ -99,7 +102,7 @@ public class GamePlayer {
                     mcfrag.displayFragment();
 
                     // TODO: Reply to host with packet to select answer
-                    sendToHost(buildMultipleChoiceSubmitAnswerPacket(player, answer));
+                    //sendToHost(buildMultipleChoiceSubmitAnswerPacket(player, answer));
                 } catch (IOException ignored) {
                 }
             }
@@ -144,7 +147,7 @@ public class GamePlayer {
 
 
                 // TODO: Move this elsewhere and call when scoreboard fragment is finished
-                sendToHost(buildScoreboardContinuePacket(player));
+                //sendToHost(buildScoreboardContinuePacket(player));
             }
         });
         // End finished minigame, return to main menu

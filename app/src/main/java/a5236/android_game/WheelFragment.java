@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
+import a5236.android_game.multiplayer.GamePlayer;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -24,18 +26,19 @@ public class WheelFragment extends Fragment {
     private TextView mWheelText;
     private TextView mRoundText;
     private int round_num;
-    private String[] minigames;  //Needs to be populsted with games
-
+    private String[] minigames = {"MultipleChoice", "SensorGame"};  //Needs to be populsted with games
 
     public WheelFragment() {
         // Required empty public constructor
     }
 
+    private String name;
 
-    public static WheelFragment newInstance(int round) {
+    public static WheelFragment newInstance(String name, int round) {
         WheelFragment fragment = new WheelFragment();
         Bundle args = new Bundle();
         args.putInt("round", round);
+        args.putString("name", name);
         fragment.setArguments(args);
         return fragment;
     }
@@ -46,6 +49,7 @@ public class WheelFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if(getArguments()!=null){
             round_num = getArguments().getInt("round");
+            name = getArguments().getString("name");
         }
     }
 
@@ -75,6 +79,8 @@ public class WheelFragment extends Fragment {
 
                 //Alert all players of chosen game
                 //Start the selected minigame for all players
+                GamePlayer player = GamePlayer.instance;
+                player.sendToHost(player.buildMinigameReadyPacket(player.player));
             }
         });
 
@@ -83,11 +89,15 @@ public class WheelFragment extends Fragment {
     }
 
     public void displayFragment(){
+        SingleFragmentActivity.replaceSingleFragment(this);
+        /*
+        TitleActivity.activity.replaceCurrent(this);
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, this);
         transaction.addToBackStack(null);
 
         transaction.commit();
+        */
     }
 
 }

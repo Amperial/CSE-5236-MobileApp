@@ -4,11 +4,14 @@ package a5236.android_game;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import a5236.android_game.multiplayer.GamePlayer;
 
 
 /**
@@ -78,29 +81,36 @@ public class MC_MinigameFragment extends Fragment implements View.OnClickListene
 
     @Override
     public void onClick(View v){
+        String answer = "";
         switch(v.getId()){
             case R.id.choiceA:
-                //Somehow attach answer to packet
+                answer = a;
                 break;
             case R.id.choiceB:
-
+                answer = b;
                 break;
             case R.id.choiceC:
-
+                answer = c;
                 break;
             case R.id.choiceD:
-
+                answer = d;
                 break;
         }
+        GamePlayer player = GamePlayer.instance;
+        player.sendToHost(player.buildMultipleChoiceSubmitAnswerPacket(player.player, answer));
     }
 
 
     public void displayFragment(){
+        SingleFragmentActivity.replaceSingleFragment(this);
+        /*
+        TitleActivity.activity.replaceCurrent(this);
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, this);
         transaction.addToBackStack(null);
 
         transaction.commit();
+        */
     }
 
 

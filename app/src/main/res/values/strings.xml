@@ -11,6 +11,8 @@
     <string name="score">Score</string>
     <string name="spin">Spin to choose a minigame!</string>
 
+    <string name="continue_button">Continue</string>
+
 
     <!-- The following are strings for the multiple choice game -->
     <string name="q1q">Which of these countries is not landlocked?</string>
