@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -17,18 +18,21 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import a5236.android_game.multiplayer.GamePlayer;
+
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link ScoreboardFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ScoreboardFragment extends Fragment {
+public class ScoreboardFragment extends Fragment implements View.OnClickListener {
 
 
     private  ArrayList<Player> player_list;
     private ListView mScoreboard;
-
+    private Button mContinueButton;
+    public GamePlayer player;
 
     public ScoreboardFragment() {
         // Required empty public constructor
@@ -52,7 +56,7 @@ public class ScoreboardFragment extends Fragment {
             String[] names = getArguments().getStringArray("player_names");
             int[] scores = getArguments().getIntArray("player_scores");
             for(int i = 0; i<names.length;i++){
-                Player temp = new Player(null, names[i]);
+                Player temp = new Player(null, names[i], false);
                 temp.setPoints(scores[i]);
                 player_list.add(temp);
             }
@@ -65,14 +69,21 @@ public class ScoreboardFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_scoreboard, container, false);
         mScoreboard = (ListView) v.findViewById(R.id.playerlist);
-
+        mContinueButton = v.findViewById(R.id.continueButton);
+        mContinueButton.setOnClickListener(this);
         PlayersAdapter adapter = new PlayersAdapter(getContext(), player_list);
 
         mScoreboard.setAdapter(adapter);
-
-
-
         return v;
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.continueButton:
+                player.sendToHost(player.buildScoreboardContinuePacket(player.player));
+                break;
+        }
     }
 
     public void displayFragment(){

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -176,5 +177,13 @@ public class TitleFragment extends Fragment implements View.OnClickListener {
         super.onActivityResult(requestCode, resultCode, intent);
 
         multiplayerClient.onActivityResult(requestCode, resultCode, intent);
+    }
+
+    public void displayFragment(){
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, this);
+        transaction.addToBackStack(null);
+
+        transaction.commit();
     }
 }

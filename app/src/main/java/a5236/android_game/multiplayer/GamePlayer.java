@@ -9,6 +9,7 @@ import a5236.android_game.MC_Question;
 import a5236.android_game.Player;
 import a5236.android_game.R;
 import a5236.android_game.ScoreboardFragment;
+import a5236.android_game.TitleFragment;
 import a5236.android_game.WheelFragment;
 import a5236.android_game.multiplayer.packet.Packet;
 import a5236.android_game.multiplayer.packet.PacketBuilder;
@@ -71,11 +72,9 @@ public class GamePlayer {
                     String minigameName = reader.readString();
                     Log.d(TAG, "Showing mini-game wheel for round: " + round + " and chosen minigame: " + minigameName);
 
-                    WheelFragment wheelFragment = WheelFragment.newInstance(round);
-                    wheelFragment.displayFragment();;
-
-                    // TODO: Move this elsewhere and call when mini-game wheel fragment is finished
+                    //TODO : show a waiting screen for non-hosts
                     sendToHost(buildMinigameReadyPacket(player));
+
                 } catch (IOException ignored) {
                 }
             }
@@ -96,10 +95,10 @@ public class GamePlayer {
                     Log.d(TAG, "Showing multiple choice mini-game");
 
                     MC_MinigameFragment mcfrag = MC_MinigameFragment.newInstance(question, a, b, c, d, answer);
+                    mcfrag.player = GamePlayer.this;
                     mcfrag.displayFragment();
 
-                    // TODO: Reply to host with packet to select answer
-                    sendToHost(buildMultipleChoiceSubmitAnswerPacket(player, answer));
+
                 } catch (IOException ignored) {
                 }
             }
@@ -118,7 +117,7 @@ public class GamePlayer {
                         String playerName = reader.readString();
                         int playerPoints = reader.readInt();
                         int roundsWon = (int) reader.readByte();
-                        Player p = new Player(playerId, playerName);
+                        Player p = new Player(playerId, playerName, false);
                         p.setPoints(playerPoints);
                         p.setRounds_won(roundsWon);
                         playerArray[i] = p;
@@ -140,11 +139,9 @@ public class GamePlayer {
                     player_scores[i] = playerArray[i].getPoints();
                 }
                 ScoreboardFragment scoreboardFragment = ScoreboardFragment.newInstance(player_names, player_scores);
+                scoreboardFragment.player = GamePlayer.this;
                 scoreboardFragment.displayFragment();
 
-
-                // TODO: Move this elsewhere and call when scoreboard fragment is finished
-                sendToHost(buildScoreboardContinuePacket(player));
             }
         });
         // End finished minigame, return to main menu
@@ -153,7 +150,8 @@ public class GamePlayer {
             public void handlePacket(PacketReader reader) {
                 Log.d(TAG, "Minigame finished, returning to main menu");
                 multiplayerClient.leaveGame();
-                // TODO: Return to main menu..
+                TitleFragment titleFragment = new TitleFragment();
+                titleFragment.displayFragment();
             }
         });
     }

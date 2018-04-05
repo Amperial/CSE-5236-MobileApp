@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import a5236.android_game.multiplayer.GamePlayer;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -20,6 +22,7 @@ public class MC_MinigameFragment extends Fragment implements View.OnClickListene
 
     private TextView qtext, atext, btext, ctext, dtext;
     private String q, a, b, c, d;
+    public GamePlayer player;
 
     public MC_MinigameFragment() {
         // Required empty public constructor
@@ -78,20 +81,23 @@ public class MC_MinigameFragment extends Fragment implements View.OnClickListene
 
     @Override
     public void onClick(View v){
+        String answer = "";
         switch(v.getId()){
             case R.id.choiceA:
-                //Somehow attach answer to packet
+                answer = a;
                 break;
             case R.id.choiceB:
-
+                answer = b;
                 break;
             case R.id.choiceC:
-
+                answer = c;
                 break;
             case R.id.choiceD:
-
+                answer = d;
                 break;
         }
+        // Reply to host with packet to select answer
+        player.sendToHost(player.buildMultipleChoiceSubmitAnswerPacket(player.player, answer));
     }
 
 
@@ -102,8 +108,4 @@ public class MC_MinigameFragment extends Fragment implements View.OnClickListene
 
         transaction.commit();
     }
-
-
-
-
 }

@@ -402,7 +402,13 @@ public class MultiplayerClient {
         players = new ArrayList<>();
         a5236.android_game.Player player = null;
         for (Participant participant : mParticipants) {
-            a5236.android_game.Player p = new a5236.android_game.Player(participant.getParticipantId(), participant.getDisplayName());
+            a5236.android_game.Player p;
+            if(participant.getParticipantId() == host.getParticipantId()) {
+                p = new a5236.android_game.Player(participant.getParticipantId(), participant.getDisplayName(), true);
+            }
+            else{
+                p = new a5236.android_game.Player(participant.getParticipantId(), participant.getDisplayName(), false);
+            }
             players.add(p);
             if (p.getParticipantId().equals(mMyId)) {
                 player = p;

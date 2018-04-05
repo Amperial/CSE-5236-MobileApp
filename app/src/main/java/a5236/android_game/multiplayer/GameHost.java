@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import a5236.android_game.Player;
+import a5236.android_game.WheelFragment;
 import a5236.android_game.multiplayer.minigames.Minigame;
 import a5236.android_game.multiplayer.minigames.MultipleChoiceMinigame;
 import a5236.android_game.multiplayer.packet.Packet;
@@ -101,6 +102,10 @@ public class GameHost extends GamePlayer {
                 // Increment round number and choose minigame
                 round++;
                 // TODO: Add more mini-games, ability to select random one
+                // Only boss hog gets THE WHEEL
+                WheelFragment wheelFragment = WheelFragment.newInstance(round);
+                wheelFragment.player = GameHost.this;
+                wheelFragment.displayFragment();
                 roundMinigame = new MultipleChoiceMinigame(this);
                 roundChosen = true;
 
@@ -114,6 +119,7 @@ public class GameHost extends GamePlayer {
     }
 
     // Send a packet to all players to continue to next state and wait for them to continue
+    //Players includes the host
     public void waitOnPlayers(Packet packet) {
         sendToPlayers(packet);
         waitingIds.clear();

@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
+import a5236.android_game.multiplayer.GamePlayer;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -24,7 +26,8 @@ public class WheelFragment extends Fragment {
     private TextView mWheelText;
     private TextView mRoundText;
     private int round_num;
-    private String[] minigames;  //Needs to be populsted with games
+    private String[] minigames = {"Multiple Choice", "Sensor Game?"};  //TODO: make more games so the wheel means something
+    public GamePlayer player;
 
 
     public WheelFragment() {
@@ -75,6 +78,7 @@ public class WheelFragment extends Fragment {
 
                 //Alert all players of chosen game
                 //Start the selected minigame for all players
+                player.sendToHost(player.buildMinigameReadyPacket(player.player));
             }
         });
 

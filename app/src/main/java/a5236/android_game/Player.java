@@ -8,12 +8,14 @@ public class Player{
     private String name;
     private int rounds_won;
     private int points;
+    private boolean host;
 
-    public Player(String playerId, String name) {
+    public Player(String playerId, String name, Boolean host) {
         this.id = playerId;
         this.name = name;
         this.rounds_won = 0;
         this.points = 0;
+        this.host = host;
     }
 
     public String getParticipantId() {
@@ -39,5 +41,7 @@ public class Player{
     public void setPoints(int points) {
         this.points = points;
     }
+
+    public boolean isHost() {return host;}
 
 }
