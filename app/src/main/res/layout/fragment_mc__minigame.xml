@@ -10,50 +10,47 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/choiceD"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="172dp"
-            android:text="TextView" />
-
-        <TextView
-            android:id="@+id/choiceC"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/choiceD"
-            android:layout_alignStart="@+id/choiceD"
-            android:layout_marginBottom="44dp"
-            android:text="TextView" />
-
-        <TextView
-            android:id="@+id/choiceB"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/choiceC"
-            android:layout_alignStart="@+id/choiceC"
-            android:layout_marginBottom="41dp"
-            android:text="TextView" />
-
-        <TextView
+        <Button
             android:id="@+id/choiceA"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/choiceB"
+            android:layout_below="@+id/Question"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="53dp" />
+
+        <Button
+            android:id="@+id/choiceB"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/choiceA"
+            android:layout_below="@+id/choiceA"
+            android:layout_marginTop="42dp" />
+
+        <Button
+            android:id="@+id/choiceC"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignStart="@+id/choiceB"
-            android:layout_marginBottom="29dp"
-            android:text="TextView" />
+            android:layout_below="@+id/choiceB"
+            android:layout_marginTop="42dp" />
 
         <TextView
             android:id="@+id/Question"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_alignStart="@+id/choiceA"
-            android:layout_marginTop="60dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="32dp"
+            android:gravity="center"
             android:text="TextView" />
+
+        <Button
+            android:id="@+id/choiceD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/choiceC"
+            android:layout_below="@+id/choiceC"
+            android:layout_marginTop="42dp" />
     </RelativeLayout>
 
 </FrameLayout>
