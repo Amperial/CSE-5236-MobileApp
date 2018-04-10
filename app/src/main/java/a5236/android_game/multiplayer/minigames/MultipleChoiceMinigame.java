@@ -14,7 +14,7 @@ public class MultipleChoiceMinigame implements Minigame {
 
     private boolean questionAsked = false;
     private int points;
-    private MC_Question question;
+    public MC_Question question;
 
     private Set<Player> remainingPlayers;
 
