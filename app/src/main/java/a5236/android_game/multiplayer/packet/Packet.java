@@ -1,6 +1,7 @@
 package a5236.android_game.multiplayer.packet;
 
 import java.io.*;
+import java.util.Arrays;
 
 public class Packet
 {
@@ -163,5 +164,27 @@ public class Packet
     public String toString()
     {
         return "Type: [" + packetType + "] ID: [" + packetID + "] Data: [" + dataLength + " bytes]";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Packet)) return false;
+
+        Packet packet = (Packet) o;
+
+        if (getPacketID() != packet.getPacketID()) return false;
+        if (getDataLength() != packet.getDataLength()) return false;
+        if (getPacketType() != packet.getPacketType()) return false;
+        return Arrays.equals(getData(), packet.getData());
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getPacketType().hashCode();
+        result = 31 * result + (int) getPacketID();
+        result = 31 * result + getDataLength();
+        result = 31 * result + Arrays.hashCode(getData());
+        return result;
     }
 }
