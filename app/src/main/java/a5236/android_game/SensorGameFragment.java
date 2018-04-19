@@ -15,6 +15,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import a5236.android_game.multiplayer.GamePlayer;
 
@@ -29,6 +30,7 @@ public class SensorGameFragment extends Fragment implements SensorEventListener{
     private SensorManager manager;
     private Sensor sensor;
     private long start, end;
+    private TextView text;
     private Vibrator vibe;
 
 
@@ -66,6 +68,15 @@ public class SensorGameFragment extends Fragment implements SensorEventListener{
             sensor = manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         }
 
+        text = v.findViewById(R.id.flip);
+        try {
+            Thread.sleep(3000);                 //1000 milliseconds is one second.
+        } catch(InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
+        String gametext = "Quick! Flip your phone face down until you feel the vibrate";
+        //text.setTextSize(35f);
+        text.setText(gametext);
         start = System.currentTimeMillis();
 
         return v;
