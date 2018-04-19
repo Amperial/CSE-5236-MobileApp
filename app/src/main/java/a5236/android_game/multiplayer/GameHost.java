@@ -3,6 +3,7 @@ package a5236.android_game.multiplayer;
 import android.util.Log;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -10,6 +11,7 @@ import java.util.Set;
 import a5236.android_game.Player;
 import a5236.android_game.multiplayer.minigames.Minigame;
 import a5236.android_game.multiplayer.minigames.MultipleChoiceMinigame;
+import a5236.android_game.multiplayer.minigames.SensorMinigame;
 import a5236.android_game.multiplayer.packet.Packet;
 import a5236.android_game.multiplayer.packet.PacketReader;
 
@@ -24,6 +26,8 @@ public class GameHost extends GamePlayer {
     private boolean roundStarted = false;
     private Minigame roundMinigame = null;
     private Set<String> waitingIds = new HashSet<>();
+
+    private List<Minigame> minigameOrder;
 
     GameHost(MultiplayerClient multiplayerClient, Player player, List<Player> players) {
         super(multiplayerClient, player, players);
@@ -55,6 +59,21 @@ public class GameHost extends GamePlayer {
                 }
             }
         });
+        // Player submit time for sensor minigame
+        setPacketHandler(51, new PacketHandler() {
+            @Override
+            public void handlePacket(PacketReader reader) {
+                try {
+                    String participantId = reader.readString();
+                    long time = reader.readLong();
+                    if (roundMinigame != null && roundMinigame instanceof SensorMinigame) {
+                        Log.d(TAG, "Received sensor minigame time: " + time + " from participantId " + participantId);
+                        ((SensorMinigame) roundMinigame).receiveTime(participantId, time);
+                    }
+                } catch (IOException ignored) {
+                }
+            }
+        });
         // Player finished with scoreboard
         setPacketHandler(31, new PacketHandler() {
             @Override
@@ -67,6 +86,11 @@ public class GameHost extends GamePlayer {
                 }
             }
         });
+
+        minigameOrder = new ArrayList<>();
+        minigameOrder.add(new MultipleChoiceMinigame(this));
+        minigameOrder.add(new SensorMinigame(this));
+        minigameOrder.add(new MultipleChoiceMinigame(this));
     }
 
     @Override
@@ -100,8 +124,7 @@ public class GameHost extends GamePlayer {
                 Log.d(TAG, "Choosing next minigame, showing wheel");
                 // Increment round number and choose minigame
                 round++;
-                // TODO: Add more mini-games, ability to select random one
-                roundMinigame = new MultipleChoiceMinigame(this);
+                roundMinigame = minigameOrder.remove(0);
                 roundChosen = true;
 
                 // Show all players the chosen minigame for the next round and wait for them to continue

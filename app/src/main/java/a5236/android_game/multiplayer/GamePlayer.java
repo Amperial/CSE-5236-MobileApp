@@ -215,15 +215,12 @@ public class GamePlayer {
                 .build();
     }
 
-    // TODO
     public Packet buildSensorMinigamePacket() {
         return new PacketBuilder(Packet.PacketType.Request)
                 .withID((short) 50)
-
                 .build();
     }
 
-    //Possibly needs work but i think its right
     public Packet buildSensorSubmitTimePacket(Player player, long time) {
         return new PacketBuilder(Packet.PacketType.Reply)
                 .withID((short) 51)
