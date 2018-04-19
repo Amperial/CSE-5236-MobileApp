@@ -9,6 +9,7 @@ import a5236.android_game.MC_Question;
 import a5236.android_game.Player;
 import a5236.android_game.R;
 import a5236.android_game.ScoreboardFragment;
+import a5236.android_game.SensorGameFragment;
 import a5236.android_game.WheelFragment;
 import a5236.android_game.multiplayer.packet.Packet;
 import a5236.android_game.multiplayer.packet.PacketBuilder;
@@ -105,6 +106,16 @@ public class GamePlayer {
                     //sendToHost(buildMultipleChoiceSubmitAnswerPacket(player, answer));
                 } catch (IOException ignored) {
                 }
+            }
+        });
+        // Show sensor mini-game
+        setPacketHandler(50, new PacketHandler() {
+            @Override
+            public void handlePacket(PacketReader reader) {
+                Log.d(TAG, "Showing sensor mini-game");
+
+                SensorGameFragment sensorfrag = SensorGameFragment.newInstance();
+                sensorfrag.displayFragment();
             }
         });
         // Show mini-game results / scoreboard fragment
